@@ -11,12 +11,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Math Tools>',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Math Tools'),
     );
   }
 }
@@ -39,6 +39,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController controller4 = TextEditingController();
   final TextEditingController controller5 = TextEditingController();
   final TextEditingController controller6 = TextEditingController();
+  final TextEditingController controller7 = TextEditingController();
+  final TextEditingController controller8 = TextEditingController();
 
   double x1 = 0;
   double y1 = 0;
@@ -49,6 +51,10 @@ class _MyHomePageState extends State<MyHomePage> {
   double y = 0;
   double x = 0;
   double? initialValueVariable = 0;
+
+  int divisionA = 0;
+  int divisionB = 0;
+  LongDivisionResult divisionResult = LongDivisionResult(remainder: 0, answer: 0);
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text("Rate Of Change"),
+              const Text("Rate Of Change"),
               Row(
                 children: [
                   const SizedBox(
@@ -84,8 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       controller: controller,
                       style: textStyle,
                       keyboardType: TextInputType.number,
-                      onChanged: (value) =>
-                          value != "" ? x1 = double.parse(value) : null,
+                      onChanged: (value) => value != "" ? x1 = double.parse(value) : null,
                     ),
                   )
                 ],
@@ -110,8 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       controller: controller2,
                       style: textStyle,
                       keyboardType: TextInputType.number,
-                      onChanged: (value) =>
-                          value != "" ? y1 = double.parse(value) : null,
+                      onChanged: (value) => value != "" ? y1 = double.parse(value) : null,
                     ),
                   )
                 ],
@@ -136,8 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       controller: controller3,
                       style: textStyle,
                       keyboardType: TextInputType.number,
-                      onChanged: (value) =>
-                          value != "" ? x2 = double.parse(value) : null,
+                      onChanged: (value) => value != "" ? x2 = double.parse(value) : null,
                     ),
                   )
                 ],
@@ -162,8 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       controller: controller4,
                       style: textStyle,
                       keyboardType: TextInputType.number,
-                      onChanged: (value) =>
-                          value != "" ? y2 = double.parse(value) : null,
+                      onChanged: (value) => value != "" ? y2 = double.parse(value) : null,
                     ),
                   )
                 ],
@@ -237,8 +239,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       controller: controller5,
                       style: textStyle,
                       keyboardType: TextInputType.number,
-                      onChanged: (value) =>
-                          value != "" ? y = double.parse(value) : null,
+                      onChanged: (value) => value != "" ? y = double.parse(value) : null,
                     ),
                   )
                 ],
@@ -263,8 +264,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       controller: controller6,
                       style: textStyle,
                       keyboardType: TextInputType.number,
-                      onChanged: (value) =>
-                          value != "" ? x = double.parse(value) : null,
+                      onChanged: (value) => value != "" ? x = double.parse(value) : null,
                     ),
                   )
                 ],
@@ -283,12 +283,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     TextButton(
                         onPressed: () {
-                          initialValueVariable =
-                              initialValue(y, x, rateOfChange(x1, y1, x2, y2));
+                          initialValueVariable = initialValue(y, x, rateOfChange(x1, y1, x2, y2));
                           setState(() {});
                         },
                         child: const Text("Calculate")),
-                    SizedBox(
+                    const SizedBox(
                       width: 8,
                     ),
                     Text(
@@ -311,6 +310,31 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                 ),
               ),
+              const Text("Division w/ Remainder"),
+              Row(
+                children: [
+                  TextField(
+                    keyboardType: const TextInputType.numberWithOptions(),
+                    controller: controller7,
+                    onChanged: (value) => divisionA = int.parse(value),
+                  ),
+                  const Text("/"),
+                  TextField(
+                    keyboardType: const TextInputType.numberWithOptions(),
+                    controller: controller8,
+                    onChanged: (value) => divisionB = int.parse(value),
+                  ),
+                ],
+              ),
+              TextButton(
+                  onPressed: () {
+                    divisionResult = divisionWithRemainder(divisionA, divisionB);
+                    setState(() {});
+                  },
+                  child: Text("Calculate")),
+              Row(
+                children: [Text(divisionResult.answer.toString()), Text("r: ${divisionResult.remainder}")],
+              )
             ],
           ),
         ),
@@ -329,4 +353,22 @@ double rateOfChange(double x1, double y1, double x2, double y2) {
 double initialValue(double y, double x, double rateOfChange) {
   final mx = rateOfChange * x;
   return y - mx;
+}
+
+LongDivisionResult divisionWithRemainder(int a, int b) {
+  int c = b;
+  int d = 0;
+
+  while (c > a) {
+    c = c - a;
+    d++;
+  }
+  return LongDivisionResult(remainder: c, answer: d);
+}
+
+class LongDivisionResult {
+  final int remainder;
+  final int answer;
+
+  LongDivisionResult({required this.remainder, required this.answer});
 }
